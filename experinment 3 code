@@ -1,0 +1,55 @@
+import math 
+ 
+data = [ 
+    ['Sunny', 'Hot', 'No'], 
+    ['Sunny', 'Cool', 'Yes'], 
+    ['Rainy', 'Hot', 'No'], 
+    ['Rainy', 'Cool', 'Yes'], 
+    ['Overcast', 'Hot', 'Yes'], 
+    ['Overcast', 'Cool', 'Yes'] 
+] 
+ 
+def entropy(rows): 
+    counts = {} 
+    for row in rows: 
+        counts[row[-1]] = counts.get(row[-1], 0) + 1 
+ 
+    result = 0 
+    for count in counts.values(): 
+        p = count / len(rows) 
+        result -= p * math.log2(p) 
+    return result 
+ 
+def build_tree(rows, features): 
+    labels = [row[-1] for row in rows] 
+ 
+    if len(set(labels)) == 1: 
+        return labels[0] 
+ 
+    if not features: 
+        return max(set(labels), key=labels.count) 
+ 
+    best = max( 
+        range(len(features)), 
+        key=lambda i: entropy(rows) - sum( 
+            len([r for r in rows if r[i] == v]) / len(rows) 
+            * entropy([r for r in rows if r[i] == v]) 
+            for v in set(r[i] for r in rows) 
+        ) 
+    ) 
+ 
+    feature = features[best] 
+    tree = {feature: {}} 
+ 
+    for value in set(row[best] for row in rows): 
+        subset = [r[:best] + r[best+1:] for r in rows if r[best] == value] 
+        tree[feature][value] = build_tree( 
+            subset, features[:best] + features[best+1:] 
+        ) 
+ 
+    return tree 
+ 
+features = ['Weather', 'Temperature'] 
+tree = build_tree(data, features) 
+print("Decision Tree:") 
+print(tree)
