@@ -1,0 +1,74 @@
+
+import pandas as pd
+import csv
+
+# Read training data from CSV file
+data = pd.read_csv('/content/training_data.csv')
+
+print("Training Data:")
+print(data)
+
+# Separate attributes and target
+concepts = data.iloc[:, :-1].values
+target = data.iloc[:, -1].values
+
+# Initialize S and G
+num_attributes = len(concepts[0])
+
+S = ['0'] * num_attributes
+G = [['?' for i in range(num_attributes)]]
+
+print("\nInitial S:", S)
+print("Initial G:", G)
+
+# Candidate Elimination Algorithm
+for i, example in enumerate(concepts):
+
+    if target[i] == 'Yes':
+
+        # Remove hypotheses inconsistent with positive example
+        G = [g for g in G if all(
+            g[j] == '?' or g[j] == example[j]
+            for j in range(num_attributes)
+        )]
+
+        # Generalize S
+        for j in range(num_attributes):
+            if S[j] == '0':
+                S[j] = example[j]
+            elif S[j] != example[j]:
+                S[j] = '?'
+
+    else:
+
+        # Specialize G using negative example
+        new_G = []
+
+        for g in G:
+            if all(g[j] == '?' or g[j] == example[j]
+                   for j in range(num_attributes)):
+
+                for j in range(num_attributes):
+                    if S[j] != '?' and S[j] != '0' and S[j] != example[j]:
+                        h = g.copy()
+                        h[j] = S[j]
+                        new_G.append(h)
+
+            else:
+                new_G.append(g)
+
+        G = new_G
+
+    print("\nAfter Example", i + 1)
+    print("S =", S)
+    print("G =", G)
+
+# Final boundaries
+print("\nFinal Specific Boundary (S):")
+print(S)
+
+print("\nFinal General Boundary (G):")
+for g in G:
+    print(g)
+
+print("\nVersion Space boundaries obtained successfully!")
