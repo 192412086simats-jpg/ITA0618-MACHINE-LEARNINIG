@@ -1,0 +1,81 @@
+
+import math
+import random
+
+random.seed(1)
+
+# Sigmoid activation function
+def sigmoid(x):
+    return 1 / (1 + math.exp(-x))
+
+# Derivative of sigmoid
+def dsigmoid(y):
+    return y * (1 - y)
+
+# XOR input and output
+X = [[0, 0], [0, 1], [1, 0], [1, 1]]
+Y = [0, 1, 1, 0]
+
+# Initialize weights and biases
+w1 = [[random.uniform(-1, 1) for _ in range(2)]
+      for _ in range(4)]
+
+w2 = [random.uniform(-1, 1) for _ in range(4)]
+
+b1 = [random.uniform(-1, 1) for _ in range(4)]
+b2 = random.uniform(-1, 1)
+
+# Learning rate
+lr = 0.5
+
+# Training the neural network
+for epoch in range(20000):
+
+    for x, target in zip(X, Y):
+
+        # Forward propagation
+        hidden = [
+            sigmoid(sum(x[j] * w1[i][j] for j in range(2)) + b1[i])
+            for i in range(4)
+        ]
+
+        output = sigmoid(
+            sum(hidden[i] * w2[i] for i in range(4)) + b2
+        )
+
+        # Calculate error
+        error = target - output
+        delta = error * dsigmoid(output)
+
+        # Update output layer weights
+        old_w2 = w2[:]
+
+        for i in range(4):
+            w2[i] += lr * delta * hidden[i]
+
+        b2 += lr * delta
+
+        # Update hidden layer weights
+        for i in range(4):
+            d = delta * old_w2[i] * dsigmoid(hidden[i])
+
+            for j in range(2):
+                w1[i][j] += lr * d * x[j]
+
+            b1[i] += lr * d
+
+# Display predictions
+print("XOR Predictions:")
+
+for x in X:
+
+    hidden = [
+        sigmoid(sum(x[j] * w1[i][j] for j in range(2)) + b1[i])
+        for i in range(4)
+    ]
+
+    output = sigmoid(
+        sum(hidden[i] * w2[i] for i in range(4)) + b2
+    )
+
+    print(x, "=", round(output, 3))
