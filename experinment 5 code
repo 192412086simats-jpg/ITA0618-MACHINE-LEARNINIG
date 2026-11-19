@@ -1,0 +1,25 @@
+import math 
+ 
+X = [[1, 2], [2, 3], [3, 3], 
+     [6, 7], [7, 8], [8, 7]] 
+Y = ['A', 'A', 'A', 'B', 'B', 'B'] 
+ 
+def distance(a, b): 
+    return math.sqrt(sum((a[i] - b[i]) ** 2 
+                         for i in range(len(a)))) 
+ 
+def knn(sample, k): 
+    distances = [] 
+    for i in range(len(X)): 
+        d = distance(sample, X[i]) 
+        distances.append((d, Y[i])) 
+ 
+    distances.sort() 
+    neighbours = [label for _, label in distances[:k]] 
+    return max(set(neighbours), key=neighbours.count) 
+ 
+print("Training Data:", X) 
+print("Training Labels:", Y) 
+ 
+for sample in [[2, 2], [7, 7], [4, 5]]: 
+    print("Sample:", sample, "Class:", knn(sample, 3)) 
