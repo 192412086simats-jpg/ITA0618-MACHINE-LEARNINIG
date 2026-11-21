@@ -1,0 +1,73 @@
+
+# Linear and Polynomial Regression
+
+# Training Dataset
+X = [1, 2, 3, 4, 5, 6]
+Y = [1, 4, 9, 16, 25, 36]
+
+n = len(X)
+
+# Linear Regression
+mean_x = sum(X) / n
+mean_y = sum(Y) / n
+
+numerator = 0
+denominator = 0
+
+for i in range(n):
+    numerator += (X[i] - mean_x) * (Y[i] - mean_y)
+    denominator += (X[i] - mean_x) ** 2
+
+slope = numerator / denominator
+intercept = mean_y - slope * mean_x
+
+linear_pred = []
+
+for x in X:
+    linear_pred.append(slope * x + intercept)
+
+
+# Polynomial Regression (Degree 2)
+poly_pred = []
+
+for x in X:
+    y = x ** 2
+    poly_pred.append(y)
+
+
+# Calculate Mean Squared Error
+linear_error = 0
+poly_error = 0
+
+for i in range(n):
+    linear_error += (Y[i] - linear_pred[i]) ** 2
+    poly_error += (Y[i] - poly_pred[i]) ** 2
+
+linear_mse = linear_error / n
+poly_mse = poly_error / n
+
+
+# Display Results
+print("Actual Values:", Y)
+
+print("\nLinear Regression:")
+print("Slope:", slope)
+print("Intercept:", intercept)
+print("Predicted Values:", linear_pred)
+print("Mean Squared Error:", round(linear_mse, 2))
+
+print("\nPolynomial Regression:")
+print("Predicted Values:", poly_pred)
+print("Mean Squared Error:", round(poly_mse, 2))
+
+
+# Comparison
+print("\nComparison:")
+
+if linear_mse < poly_mse:
+    print("Linear Regression performs better.")
+elif poly_mse < linear_mse:
+    print("Polynomial Regression performs better.")
+else:
+    print("Both models perform equally.")
+
