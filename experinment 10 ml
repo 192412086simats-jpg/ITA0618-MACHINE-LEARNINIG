@@ -1,0 +1,80 @@
+
+import math
+
+# Input Dataset
+X = [1, 2, 3, 8, 9, 10]
+
+# Initialize Parameters
+means = [2.0, 9.0]
+variances = [2.0, 2.0]
+weights = [0.5, 0.5]
+
+# Gaussian Probability Function
+def gaussian(x, mean, variance):
+    return (1 / math.sqrt(2 * math.pi * variance)) * math.exp(
+        -((x - mean) ** 2) / (2 * variance)
+    )
+
+
+# EM Algorithm
+for iteration in range(20):
+
+    # E-Step: Calculate Responsibilities
+    responsibilities = []
+
+    for x in X:
+        p1 = weights[0] * gaussian(x, means[0], variances[0])
+        p2 = weights[1] * gaussian(x, means[1], variances[1])
+
+        total = p1 + p2
+
+        r1 = p1 / total
+        r2 = p2 / total
+
+        responsibilities.append([r1, r2])
+
+    # M-Step: Update Parameters
+    for k in range(2):
+
+        total = sum(r[k] for r in responsibilities)
+
+        means[k] = sum(
+            responsibilities[i][k] * X[i]
+            for i in range(len(X))
+        ) / total
+
+        variances[k] = sum(
+            responsibilities[i][k] * (X[i] - means[k]) ** 2
+            for i in range(len(X))
+        ) / total
+
+        variances[k] = max(variances[k], 0.000001)
+
+        weights[k] = total / len(X)
+
+
+# Display Results
+print("Input Data:", X)
+
+print("\nFinal Cluster Means:")
+print(means)
+
+print("\nFinal Variances:")
+print(variances)
+
+print("\nCluster Weights:")
+print(weights)
+
+
+# Assign Clusters
+print("\nClustering Results:")
+
+for x in X:
+
+    p1 = weights[0] * gaussian(x, means[0], variances[0])
+    p2 = weights[1] * gaussian(x, means[1], variances[1])
+
+    if p1 > p2:
+        print(x, "belongs to Cluster 1")
+    else:
+        print(x, "belongs to Cluster 2")
