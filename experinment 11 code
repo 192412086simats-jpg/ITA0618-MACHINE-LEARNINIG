@@ -1,0 +1,86 @@
+
+# Credit Score Classification using KNN
+
+import math
+
+# Training Dataset
+X = [
+    [1, 25000],
+    [2, 30000],
+    [3, 45000],
+    [4, 60000],
+    [5, 80000],
+    [6, 100000],
+    [2, 35000],
+    [5, 75000]
+]
+
+Y = [
+    'Low', 'Low', 'Medium', 'Medium',
+    'High', 'High', 'Low', 'High'
+]
+
+
+# Euclidean Distance
+def distance(a, b):
+    total = 0
+
+    for i in range(len(a)):
+        total += (a[i] - b[i]) ** 2
+
+    return math.sqrt(total)
+
+
+# KNN Classification
+def predict(sample, k=3):
+    distances = []
+
+    for i in range(len(X)):
+        d = distance(sample, X[i])
+        distances.append((d, Y[i]))
+
+    # Sort distances
+    distances.sort(key=lambda x: x[0])
+
+    # Select K nearest neighbours
+    neighbours = []
+
+    for i in range(k):
+        neighbours.append(distances[i][1])
+
+    # Find Majority Class
+    prediction = max(
+        set(neighbours),
+        key=neighbours.count
+    )
+
+    return prediction
+
+
+# Display Training Data
+print("Credit Score Classification")
+
+print("\nTraining Dataset:")
+
+for i in range(len(X)):
+    print(X[i], ":", Y[i])
+
+
+# Test Data
+test_data = [
+    [1, 28000],
+    [4, 55000],
+    [6, 90000]
+]
+
+
+# Classification Results
+print("\nClassification Results:")
+
+for sample in test_data:
+    result = predict(sample)
+
+    print(
+        "Input:", sample,
+        "Predicted Credit Score:", result
+    )
