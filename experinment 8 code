@@ -1,0 +1,52 @@
+
+# Linear Regression Algorithm
+
+# Training Dataset
+X = [1, 2, 3, 4, 5]
+Y = [10, 20, 30, 40, 50]
+
+# Calculate Mean
+n = len(X)
+
+mean_x = sum(X) / n
+mean_y = sum(Y) / n
+
+# Calculate Slope
+numerator = 0
+denominator = 0
+
+for i in range(n):
+    numerator += (X[i] - mean_x) * (Y[i] - mean_y)
+    denominator += (X[i] - mean_x) ** 2
+
+slope = numerator / denominator
+
+# Calculate Intercept
+intercept = mean_y - slope * mean_x
+
+# Prediction
+predictions = []
+
+for x in X:
+    y_pred = slope * x + intercept
+    predictions.append(y_pred)
+
+# Display Results
+print("Training Data:")
+print("X Values:", X)
+print("Y Values:", Y)
+
+print("\nLinear Regression Model")
+print("Slope:", slope)
+print("Intercept:", intercept)
+
+print("\nPredicted Values:")
+
+for i in range(n):
+    print("Input:", X[i], "Predicted:", predictions[i])
+
+# Predict New Value
+new_x = 6
+new_y = slope * new_x + intercept
+
+print("\nPrediction for X =", new_x, "is", new_y)
