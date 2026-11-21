@@ -1,0 +1,76 @@
+import math
+
+# Training Dataset
+X = [
+    [1, 2], [2, 3], [3, 2],
+    [6, 7], [7, 8], [8, 7]
+]
+
+Y = [0, 0, 0, 1, 1, 1]
+
+# Initialize Weights and Bias
+weights = [0.0, 0.0]
+bias = 0.0
+learning_rate = 0.01
+
+# Sigmoid Function
+def sigmoid(z):
+    return 1 / (1 + math.exp(-z))
+
+
+# Training the Model
+for epoch in range(5000):
+
+    dw = [0.0, 0.0]
+    db = 0.0
+
+    for x, y in zip(X, Y):
+
+        z = sum(weights[i] * x[i] for i in range(2)) + bias
+
+        prediction = sigmoid(z)
+
+        error = prediction - y
+
+        for i in range(2):
+            dw[i] += error * x[i]
+
+        db += error
+
+    # Update Weights and Bias
+    for i in range(2):
+        weights[i] -= learning_rate * dw[i] / len(X)
+
+    bias -= learning_rate * db / len(X)
+
+
+# Display Model Parameters
+print("Weights:", weights)
+print("Bias:", bias)
+
+
+# Prediction Function
+def predict(sample):
+
+    z = sum(weights[i] * sample[i] for i in range(2)) + bias
+
+    probability = sigmoid(z)
+
+    if probability >= 0.5:
+        return 1
+    else:
+        return 0
+
+
+# Test the Model
+test_data = [
+    [2, 2], [7, 7], [3, 3], [8, 8]
+]
+
+print("\nLogistic Regression Results:")
+
+for sample in test_data:
+
+    result = predict(sample)
+
+    print("Input:", sample, "Predicted Class:", result)
