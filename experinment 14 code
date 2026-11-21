@@ -1,0 +1,84 @@
+
+# House Price Prediction using Linear Regression
+
+# Import Libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+
+# Create Dataset
+data = {
+    'Area': [1000, 1200, 1500, 1800, 2000,
+             2200, 2500, 2800, 3000, 3500],
+
+    'Bedrooms': [2, 2, 3, 3, 3, 4, 4, 4, 5, 5],
+
+    'Bathrooms': [1, 2, 2, 2, 3, 3, 3, 4, 4, 4],
+
+    'Age': [10, 8, 7, 6, 5, 4, 3, 2, 1, 1],
+
+    'Price': [2000000, 2500000, 3000000, 3500000,
+              4000000, 4500000, 5000000, 5500000,
+              6000000, 7000000]
+}
+
+# Convert Dataset into DataFrame
+df = pd.DataFrame(data)
+
+# Display Dataset
+print("House Price Dataset:")
+print(df)
+
+# Select Input and Output
+X = df[['Area', 'Bedrooms', 'Bathrooms', 'Age']]
+Y = df['Price']
+
+# Split Training and Testing Data
+X_train, X_test, Y_train, Y_test = train_test_split(
+    X, Y, test_size=0.2, random_state=42
+)
+
+# Create Linear Regression Model
+model = LinearRegression()
+
+# Train the Model
+model.fit(X_train, Y_train)
+
+# Predict House Prices
+predictions = model.predict(X_test)
+
+# Display Actual and Predicted Prices
+print("\nActual House Prices:")
+print(list(Y_test))
+
+print("\nPredicted House Prices:")
+print(predictions)
+
+# Evaluate Model
+print("\nModel Evaluation:")
+
+print("Mean Absolute Error:",
+      mean_absolute_error(Y_test, predictions))
+
+print("Mean Squared Error:",
+      mean_squared_error(Y_test, predictions))
+
+print("R2 Score:",
+      r2_score(Y_test, predictions))
+
+# Predict Price of a New House
+new_house = pd.DataFrame({
+    'Area': [2000],
+    'Bedrooms': [3],
+    'Bathrooms': [2],
+    'Age': [5]
+})
+
+predicted_price = model.predict(new_house)
+
+print("\nNew House Details:")
+print(new_house)
+
+print("\nPredicted House Price: Rs.",
+      round(predicted_price[0], 2))
