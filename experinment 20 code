@@ -1,0 +1,59 @@
+
+# Import required libraries
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+
+# Generate historical sales data
+months = np.arange(1, 25).reshape(-1, 1)
+
+rng = np.random.default_rng(5)
+
+sales = 100 + 8 * months.ravel() + rng.normal(0, 8, 24)
+
+# Create Linear Regression model
+model = LinearRegression()
+
+# Train model
+model.fit(months, sales)
+
+# Predict next six months
+future_months = np.arange(25, 31).reshape(-1, 1)
+
+future_sales = model.predict(future_months)
+
+# Display R2 score
+print("Trend Model R2:",
+      round(model.score(months, sales), 4))
+
+# Display future sales predictions
+print("Predicted Sales for Next Six Months:")
+
+for month, value in zip(range(25, 31), future_sales):
+    print("Month", month, ":", round(value, 2), "units")
+
+# Plot historical and predicted sales
+plt.figure(figsize=(7, 3))
+
+plt.scatter(months, sales, label="Historical Sales")
+
+plt.plot(
+    months,
+    model.predict(months),
+    label="Fitted Trend"
+)
+
+plt.plot(
+    future_months,
+    future_sales,
+    "o--",
+    label="Future Forecast"
+)
+
+plt.xlabel("Month")
+plt.ylabel("Sales")
+plt.title("Future Sales Prediction")
+
+plt.legend()
+plt.grid(True)
+plt.show()
